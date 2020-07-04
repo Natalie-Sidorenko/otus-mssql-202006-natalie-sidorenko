@@ -1,1 +1,1 @@
-# otus-mssql-202006-natalie-sidorenko
+# Домашние задания курса OTUS "MS SQL Server разработчик". Группа 2020-06.
