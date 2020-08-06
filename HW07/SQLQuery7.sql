@@ -299,5 +299,58 @@ GO
 
 SELECT @@SERVERNAME;
 
-exec master..xp_cmdshell 'bcp "[WideWorldImporters].[Purchasing].[Suppliers]" out  "C:\Users\hp\Documents\SQL Server Management Studio\Suppliers.csv" -T -w -t"&$&" -S DESKTOP-QFU3MTE'
+exec master..xp_cmdshell 'bcp "[WideWorldImporters].[Purchasing].[Suppliers]" out  "C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\Suppliers.csv" -T -w -t"&$&" -S DESKTOP-QFU3MTE'
+
+CREATE TABLE [Purchasing].[SuppliersForBulkInsert] (
+       [SupplierID] [int] NOT NULL
+      ,[SupplierName] [nvarchar](100) NOT NULL
+      ,[SupplierCategoryID] [int] NOT NULL
+      ,[PrimaryContactPersonID] [int] NOT NULL
+      ,[AlternateContactPersonID] [int] NOT NULL
+      ,[DeliveryMethodID] [int] NOT NULL
+      ,[DeliveryCityID] [int] NOT NULL
+      ,[PostalCityID] [int] NOT NULL
+      ,[SupplierReference] [nvarchar](20) NULL
+      ,[BankAccountName] [nvarchar](50) NULL
+      ,[BankAccountBranch] [nvarchar](50) NULL
+      ,[BankAccountCode] [nvarchar](20) NULL
+      ,[BankAccountNumber] [nvarchar](20) NULL
+      ,[BankInternationalCode] [nvarchar](20) NULL
+      ,[PaymentDays] [int] NOT NULL
+      ,[InternalComments] [nvarchar](max) NULL
+      ,[PhoneNumber] [nvarchar](20) NOT NULL
+      ,[FaxNumber] [nvarchar](20) NOT NULL
+      ,[WebsiteURL] [nvarchar](256) NOT NULL
+      ,[DeliveryAddressLine1] [nvarchar](60) NOT NULL
+      ,[DeliveryAddressLine2] [nvarchar](20) NULL
+      ,[DeliveryPostalCode] [nvarchar](10) NOT NULL
+      ,[DeliveryLocation] [geography] NULL
+      ,[PostalAddressLine1] [nvarchar](60) NOT NULL
+      ,[PostalAddressLine2] [nvarchar](20) NULL
+      ,[PostalPostalCode] [nvarchar](10) NOT NULL
+      ,[LastEditedBy] [int] NOT NULL
+      ,[ValidFrom] [datetime2](7) NOT NULL
+      ,[ValidTo] [datetime2](7) NOT NULL
+	  ,CONSTRAINT [PK_Purchasing_SuppliersForBulkInsert] PRIMARY KEY CLUSTERED 
+(
+	[SupplierID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [USERDATA]
+) ON [USERDATA]
+GO
+
+BULK INSERT [WideWorldImporters].[Purchasing].[SuppliersForBulkInsert]
+				   FROM "C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\Suppliers.csv"
+				   WITH 
+					 (
+						BATCHSIZE = 1000, 
+						DATAFILETYPE = 'widechar',
+						FIELDTERMINATOR = '&$&',
+						ROWTERMINATOR ='\n',
+						KEEPNULLS,
+						TABLOCK        
+					  );
+SELECT * FROM [Purchasing].[SuppliersForBulkInsert];
+
+
+
 
