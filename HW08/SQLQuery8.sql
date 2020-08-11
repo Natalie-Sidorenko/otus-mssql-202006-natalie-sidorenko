@@ -236,3 +236,13 @@ SELECT c.[CustomerID]
   )
 SELECT * FROM CTE WHERE CTE.Rnk<3
 ORDER BY CTE.[CustomerID];
+
+   /****** Bonus iz predydushchej temy
+Napishite zapros, kotoryj vybiraet 10 klientov, kotorye sdelali bol'she 30 zakazov i poslednij zakaz byl ne pozdnee aprelya 2016.  ******/
+
+SELECT TOP 10 o.[CustomerID],c.[CustomerName], COUNT(o.[OrderID]), MAX(o.[OrderDate])
+      FROM [Sales].[Orders] o
+	  JOIN [Sales].[Customers] c 
+	  ON o.[CustomerID]=c.[CustomerID]
+	  GROUP BY o.[CustomerID],c.[CustomerName]
+	  HAVING COUNT(o.[OrderID])>30 AND MAX(o.[OrderDate])>'2016-03-31';
