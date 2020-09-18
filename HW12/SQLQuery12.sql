@@ -57,7 +57,8 @@ THEN UPDATE SET [SupplierID]=source.[SupplierID],
 				[UnitPrice]=source.[UnitPrice],
 				[TypicalWeightPerUnit]=source.[TypicalWeightPerUnit]
 WHEN NOT MATCHED 
-THEN INSERT ([SupplierID],
+THEN INSERT ([StockItemName],
+             [SupplierID],
 	         [UnitPackageID],
 	         [OuterPackageID],
 	         [LeadTimeDays],
@@ -65,8 +66,10 @@ THEN INSERT ([SupplierID],
 	         [IsChillerStock],
 	         [TaxRate],
 	         [UnitPrice],
-	         [TypicalWeightPerUnit])
-VALUES (source.[SupplierID],
+	         [TypicalWeightPerUnit],
+			 [LastEditedBy])
+VALUES (source.[StockItemName],
+        source.[SupplierID],
         source.[UnitPackageID],
 	    source.[OuterPackageID],
 		source.[LeadTimeDays],
@@ -74,9 +77,8 @@ VALUES (source.[SupplierID],
 		source.[IsChillerStock],
 		source.[TaxRate],
 		source.[UnitPrice],
-		source.[TypicalWeightPerUnit]);
-
---ERROR: Cannot insert the value NULL into column 'StockItemName', table 'WideWorldImporters.Warehouse.StockItems'; column does not allow nulls. UPDATE fails.
+		source.[TypicalWeightPerUnit],
+		1);
 
 /****** 2. Vygruzit' dannye iz tablicy StockItems v takoj zhe xml-fajl, kak StockItems.xml ******/
 
