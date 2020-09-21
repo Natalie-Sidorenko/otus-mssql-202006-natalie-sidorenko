@@ -435,6 +435,7 @@ SELECT DATEDIFF(d, GETDATE(), '2020-09-20')
 /**** INVENTORY (RETURN) ****/
 SELECT a.invoice FROM Invoices.Primary_invoices a
 WHERE a.storeroom_id = 3 AND NOT EXISTS (SELECT b.return_invoice FROM Invoices.Primary_invoices b WHERE a.invoice=b.invoice);
+GO
 
 CREATE PROCEDURE Invoices.ReturnInventory @invoice bigint
 AS
