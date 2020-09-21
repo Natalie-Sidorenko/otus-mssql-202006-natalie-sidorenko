@@ -132,7 +132,7 @@ SET @xmlDocument = (
 EXEC sp_xml_preparedocument @docHandle OUTPUT, @xmlDocument
 INSERT INTO #OrdersForBulkInsert
 SELECT *
-FROM OPENXML(@docHandle, 'Client/Order', 3)        --works incorrectly
+FROM OPENXML(@docHandle, 'Client/Order', 3)       --works incorrectly
 WITH ( 
 	client_id bigint '../@ID',
 	[order] varchar (20) '../Order')
@@ -272,7 +272,7 @@ BEGIN
 	UPDATE Invoices.Primary_invoices
 SET 
 	state_id = 2
-WHERE storeroom_id = 1;
+WHERE storeroom_id = 1 AND state_id = 1;
 
 END
 GO
@@ -285,14 +285,15 @@ BEGIN
 	UPDATE Invoices.Return_invoices
 SET 
 	state_id = 2
-WHERE storeroom_id = 1;
+WHERE storeroom_id = 1 AND state_id = 1;
 
 END
 GO
 
 EXEC Invoices.GiveToCourierPrimary;
 GO
-
+EXEC Invoices.GiveToCourierReturn;
+GO
 
 /**** COURIER'S SCRIPT (PRIMARY) ****/
 SELECT invoice FROM Invoices.Primary_invoices
@@ -320,7 +321,7 @@ WHERE invoice = @invoice;
 END
 GO
 
-EXEC Invoices.Couriersscript @invoice=15000000057, @result=5;
+EXEC Invoices.Couriersscript @invoice=15000000019, @result=1;
 EXEC Invoices.Couriersscript @invoice=15000000022, @result=4, @date='2020-09-22';
 GO
 
@@ -354,8 +355,12 @@ WHERE invoice = @invoice;
 END
 ELSE
 BEGIN
-PRINT 'ERROR'
+PRINT 'ERROR'                  --works incorrectly
 END
+GO
+
+EXEC Invoices.CouriersscriptReturn @invoice=4000000002, @result=1;
+EXEC Invoices.CouriersscriptReturn @invoice=4000000003, @result=5;
 GO
 
 /**** CALL-CENTER OPERATOR'S SCRIPT ****/
@@ -387,7 +392,7 @@ PRINT 'ERROR'
 END
 GO
 
-EXEC Invoices.Callcenterscript @invoice=15000000057, @result=4, @date='2020-09-23';
+EXEC Invoices.Callcenterscript @invoice=15000000055, @result=4, @date='2020-09-23';
 GO
 
 /**** INVENTORY (PRIMARY) ****/
