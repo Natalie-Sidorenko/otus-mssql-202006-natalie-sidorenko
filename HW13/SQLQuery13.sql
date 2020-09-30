@@ -9,7 +9,8 @@ CREATE PROCEDURE Sales.uspSelectClientWithMaxPurchase AS
 SET NOCOUNT ON;
 WITH T AS (SELECT C.CustomerName,
                   SUM(L.Quantity*L.UnitPrice) AS Purchase
-FROM Sales.InvoiceLines L JOIN Sales.Invoices I
+FROM Sales.InvoiceLines L
+JOIN Sales.Invoices I
 ON L.InvoiceID=I.InvoiceID
 JOIN Sales.Customers C
 ON C.CustomerID=I.CustomerID
@@ -29,7 +30,8 @@ RETURNS TABLE AS
 RETURN(
 WITH T AS (SELECT C.CustomerName,
                   SUM(L.Quantity*L.UnitPrice) AS Purchase
-FROM Sales.InvoiceLines L JOIN Sales.Invoices I
+FROM Sales.InvoiceLines L
+JOIN Sales.Invoices I
 ON L.InvoiceID=I.InvoiceID
 JOIN Sales.Customers C
 ON C.CustomerID=I.CustomerID
@@ -51,7 +53,8 @@ AS
 SET NOCOUNT ON;
 WITH T AS (SELECT I.CustomerID,
        SUM(L.Quantity*L.UnitPrice) AS Purchase
-FROM Sales.InvoiceLines L JOIN Sales.Invoices I
+FROM Sales.InvoiceLines L
+JOIN Sales.Invoices I
 ON L.InvoiceID=I.InvoiceID
 GROUP BY L.InvoiceID, I.CustomerID)
 SELECT SUM(Purchase) AS SumPurchase
@@ -61,17 +64,18 @@ HAVING CustomerID=@CustomerID
 RETURN;
 GO
 
-EXEC Sales.uspSelectSumPurchaseForClient @CustomerID=403;
+EXEC Sales.uspSelectSumPurchaseForClient @CustomerID=401;
 GO
 
 /****** 3) Sozdat' odinakovuyu funkciyu i xranimuyu proceduru, posmotret' v chem raznica v proizvoditel'nosti i pochemu. ******/
 
-CREATE FUNCTION Sales.udfSelectSumPurchaseForClient (@CustomerID int) --function, identical to procedure from 2)
+CREATE FUNCTION Sales.udfSumPurchaseForClient (@CustomerID int) --function, identical to procedure from 2)
 RETURNS TABLE AS
 RETURN(
 WITH T AS (SELECT I.CustomerID,
        SUM(L.Quantity*L.UnitPrice) AS Purchase
-FROM Sales.InvoiceLines L JOIN Sales.Invoices I
+FROM Sales.InvoiceLines L
+JOIN Sales.Invoices I
 ON L.InvoiceID=I.InvoiceID
 GROUP BY L.InvoiceID, I.CustomerID)
 SELECT SUM(Purchase) AS SumPurchase
@@ -81,6 +85,21 @@ HAVING CustomerID=@CustomerID
 );
 GO
 
-SELECT * FROM Sales.udfSelectSumPurchaseForClient (403);
+SELECT * FROM Sales.udfSumPurchaseForClient (401);
 
 /****** 4) Sozdajte tablichnuyu funkciyu pokazhite kak ee mozhno vyzvat' dlya kazhdoj stroki result set'a bez ispol'zovaniya cikla.  ******/
+
+CREATE FUNCTION Sales.udfInvoicesForClient (@CustomerID int) 
+RETURNS TABLE AS
+RETURN(
+SELECT InvoiceID
+FROM Sales.Invoices
+WHERE CustomerID=@CustomerID
+);
+GO
+
+SELECT * FROM Sales.udfInvoicesForClient (2) 
+
+SELECT CustomerID, CustomerName, Invoices.*                          --function call
+FROM Sales.Customers
+	CROSS APPLY Sales.udfInvoicesForClient (CustomerID) AS Invoices;
