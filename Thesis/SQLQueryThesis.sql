@@ -116,7 +116,7 @@ SET @xmlDocument = (
 EXEC sp_xml_preparedocument @docHandle OUTPUT, @xmlDocument
 INSERT INTO #OrdersForBulkInsert
 SELECT *
-FROM OPENXML(@docHandle, 'Client/Order', 3)       --works incorrectly
+FROM OPENXML(@docHandle, 'Client/Order', 3)       
 WITH ( 
 	client_id bigint '../@ID',
 	[order] varchar (20) '.')
@@ -134,7 +134,7 @@ SET @xmlDocument = (
 EXEC sp_xml_preparedocument @docHandle OUTPUT, @xmlDocument
 INSERT INTO #OrdersForBulkInsert
 SELECT *
-FROM OPENXML(@docHandle, 'Client/Order', 3)      --works incorrectly
+FROM OPENXML(@docHandle, 'Client/Order', 3)     
 WITH ( 
 	client_id bigint '../@ID',
 	[order] varchar (20) '.')
@@ -202,17 +202,33 @@ GO
 
 CREATE PROCEDURE Invoices.Couriersscript @invoice bigint, @result int, @date date = NULL
 AS
-BEGIN
 SET NOCOUNT ON;
-UPDATE Invoices.Invoices
-SET result_id=@result
-WHERE invoice_number=@invoice
-UPDATE Invoices.Invoices
-SET state_id = CASE WHEN @result=1 THEN 3 WHEN @result IN (2, 3, 4, 5) THEN 1 END
-WHERE invoice_number=@invoice
-UPDATE Invoices.Invoices
-SET current_delivery_date= CASE WHEN @result IN (1, 2, 3, 4, 5) THEN @date ELSE GETDATE() END
-WHERE invoice_number=@invoice
+IF 2 = (SELECT state_id FROM Invoices.Invoices WHERE invoice_number=@invoice)
+BEGIN
+ IF 1 = (SELECT is_return FROM Invoices.Invoices WHERE invoice_number=@invoice)
+ BEGIN
+ UPDATE Invoices.Invoices
+ SET result_id = CASE WHEN @result=1 THEN @result ELSE 4 END
+ WHERE invoice_number=@invoice;
+ UPDATE Invoices.Invoices
+ SET state_id = CASE WHEN @result=1 THEN 3 ELSE 1 END
+ WHERE invoice_number=@invoice;
+ UPDATE Invoices.Invoices
+ SET current_delivery_date = CASE WHEN @result=1 THEN NULL ELSE (GETDATE()+1) END
+ WHERE invoice_number=@invoice;
+ END
+ ELSE
+ BEGIN
+ UPDATE Invoices.Invoices
+ SET result_id=@result
+ WHERE invoice_number=@invoice;
+ UPDATE Invoices.Invoices
+ SET state_id = CASE WHEN @result=1 THEN 3 WHEN @result IN (2, 3, 4, 5) THEN 1 END
+ WHERE invoice_number=@invoice;
+ UPDATE Invoices.Invoices
+ SET current_delivery_date= CASE WHEN @result IN (1, 2, 3, 4, 5) THEN @date ELSE GETDATE() END
+ WHERE invoice_number=@invoice;
+ END
 END
 GO
 
@@ -252,8 +268,9 @@ GO
 
 CREATE PROCEDURE Invoices.Inventory @invoice bigint
 AS
-BEGIN
 SET NOCOUNT ON;
+IF 1 = (SELECT state_id FROM Invoices.Invoices WHERE invoice_number=@invoice)
+BEGIN
 UPDATE Invoices.Invoices
 SET storeroom_id = CASE WHEN DATEDIFF(d, GETDATE(),current_delivery_date) = 1 THEN 1
 WHEN DATEDIFF(d, shelf_life, GETDATE())>=0 THEN 3
@@ -273,16 +290,23 @@ GO
 
 CREATE PROCEDURE Invoices.ReturnInvoiceCreation @invoice bigint
 AS
-BEGIN
 SET NOCOUNT ON;
 IF 3 = (SELECT storeroom_id FROM Invoices.Invoices WHERE invoice_number=@invoice)
 AND 0 =(SELECT is_return FROM Invoices.Invoices WHERE invoice_number=@invoice)
-INSERT INTO Invoices.Invoices (client_id, order_number, invoice_number, is_return, creation_date, shelf_life)
-VALUES ((SELECT client_id FROM Invoices.Invoices WHERE invoice_number=@invoice), CAST (@invoice AS nvarchar), 
-         NEXT VALUE FOR dbo.return_numbers, 1, GETDATE(), GETDATE());
+BEGIN
 UPDATE Invoices.Invoices
 SET state_id=3
 WHERE invoice_number=@invoice;
+UPDATE Invoices.Invoices
+SET return_invoice_number = NEXT VALUE FOR dbo.return_numbers
+WHERE invoice_number=@invoice;
+INSERT INTO Invoices.Invoices (client_id, order_number, invoice_number, is_return, creation_date, shelf_life)
+VALUES ((SELECT client_id FROM Invoices.Invoices WHERE invoice_number=@invoice),
+         CAST (@invoice AS nvarchar), 
+        (SELECT return_invoice_number FROM Invoices.Invoices WHERE invoice_number=@invoice),
+		 1,
+		 GETDATE(),
+		 '9999-12-31');
 END
 GO
 
