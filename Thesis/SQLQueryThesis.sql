@@ -279,7 +279,10 @@ IF 3 = (SELECT storeroom_id FROM Invoices.Invoices WHERE invoice_number=@invoice
 AND 0 =(SELECT is_return FROM Invoices.Invoices WHERE invoice_number=@invoice)
 INSERT INTO Invoices.Invoices (client_id, order_number, invoice_number, is_return, creation_date, shelf_life)
 VALUES ((SELECT client_id FROM Invoices.Invoices WHERE invoice_number=@invoice), CAST (@invoice AS nvarchar), 
-         NEXT VALUE FOR dbo.return_numbers, 1, GETDATE(), GETDATE())
+         NEXT VALUE FOR dbo.return_numbers, 1, GETDATE(), GETDATE());
+UPDATE Invoices.Invoices
+SET state_id=3
+WHERE invoice_number=@invoice;
 END
 GO
 
