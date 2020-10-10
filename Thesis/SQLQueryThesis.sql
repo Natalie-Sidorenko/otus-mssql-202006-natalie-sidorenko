@@ -94,3 +94,197 @@ SELECT * FROM Reference.Delivery_results;
 INSERT INTO Reference.Clients (client_id, client_name) VALUES (7700000001, 'Aliexpress'), (7700000002, 'H&M'), (7700000003, 'INDITEX');
 SELECT * FROM Reference.Clients;
 
+/**** CREATE ORDERS (INVOICES) FROM CLIENT'S FILES ****/
+CREATE TABLE #OrdersForBulkInsert (
+client_id bigint,
+[order] nvarchar (20)
+);
+
+--Aliexpress
+DECLARE @docHandle int
+DECLARE @xmlDocument  xml
+SET @xmlDocument = ( 
+ SELECT * FROM OPENROWSET
+  (BULK 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\Aliexpress.xml',
+   SINGLE_BLOB)
+   as s)
+   SELECT @xmlDocument
+   --SELECT 
+   --       TypeNode.value('(.)[1]', 'nvarchar(150)')
+   -- from @xmlDocument.nodes('Client/Order') as XTbl(TypeNode)
+
+EXEC sp_xml_preparedocument @docHandle OUTPUT, @xmlDocument
+INSERT INTO #OrdersForBulkInsert
+SELECT *
+FROM OPENXML(@docHandle, 'Client/Order', 3)       --works incorrectly
+WITH ( 
+	client_id bigint '../@ID',
+	[order] varchar (20) '.')
+
+EXEC sp_xml_removedocument @docHandle;
+
+--H&M
+DECLARE @docHandle int
+DECLARE @xmlDocument  xml
+SET @xmlDocument = ( 
+ SELECT * FROM OPENROWSET
+  (BULK 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\H&M.xml',
+   SINGLE_BLOB)
+   as s)
+EXEC sp_xml_preparedocument @docHandle OUTPUT, @xmlDocument
+INSERT INTO #OrdersForBulkInsert
+SELECT *
+FROM OPENXML(@docHandle, 'Client/Order', 3)      --works incorrectly
+WITH ( 
+	client_id bigint '../@ID',
+	[order] varchar (20) '.')
+
+EXEC sp_xml_removedocument @docHandle;
+
+--INDITEX
+DECLARE @docHandle int
+DECLARE @xmlDocument  xml
+SET @xmlDocument = ( 
+ SELECT * FROM OPENROWSET
+  (BULK 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\INDITEX.xml',
+   SINGLE_BLOB)
+   as s)
+EXEC sp_xml_preparedocument @docHandle OUTPUT, @xmlDocument
+INSERT INTO #OrdersForBulkInsert
+SELECT *
+FROM OPENXML(@docHandle, 'Client/Order', 3)     
+WITH ( 
+	client_id bigint '../@ID',
+	[order] varchar (20) '.')
+
+EXEC sp_xml_removedocument @docHandle;
+
+SELECT * FROM #OrdersForBulkInsert;
+
+/**** INSERT INTO Invoices.Invoices ****/
+INSERT INTO Invoices.Invoices (client_id, order_number, is_return, creation_date, shelf_life)
+SELECT * , 0, GETDATE(), (GETDATE()+14) FROM #OrdersForBulkInsert; 
+SELECT * FROM Invoices.Invoices;
+GO
+
+/**** CREATE TRIGGER ON Invoices.Invoices FOR INSERT INTO History.Delivery_history ****/
+CREATE TRIGGER Delivery_result_Update
+ON Invoices.Invoices
+ AFTER UPDATE
+ AS   
+IF ( UPDATE (result_id))  
+BEGIN  
+ INSERT INTO History.Delivery_history(invoice_number, delivery_date, delivery_result)
+	SELECT invoice_number, current_delivery_date, result_id
+	FROM INSERTED
+END;  
+GO 
+SELECT * FROM History.Delivery_history;
+GO
+
+/**** STORED PROCEDURES: GIVE TO COURIER ****/
+CREATE PROCEDURE Invoices.GiveToCourier
+AS
+BEGIN
+	SET NOCOUNT ON;
+UPDATE Invoices.Invoices
+SET state_id = 2
+WHERE storeroom_id = 1 AND state_id = 1;
+END
+GO
+EXEC Invoices.GiveToCourier;
+GO
+
+/**** COURIER'S SCRIPT ****/
+SELECT invoice_number FROM Invoices.Invoices
+WHERE state_id = 2;
+GO
+
+CREATE PROCEDURE Invoices.Couriersscript @invoice bigint, @result int, @date date = NULL
+AS
+BEGIN
+SET NOCOUNT ON;
+UPDATE Invoices.Invoices
+SET result_id=@result
+WHERE invoice_number=@invoice
+UPDATE Invoices.Invoices
+SET state_id = CASE WHEN @result=1 THEN 3 WHEN @result IN (2, 3, 4, 5) THEN 1 END
+WHERE invoice_number=@invoice
+UPDATE Invoices.Invoices
+SET current_delivery_date= CASE WHEN @result IN (1, 2, 3, 4, 5) THEN @date ELSE GETDATE() END
+WHERE invoice_number=@invoice
+END
+GO
+
+EXEC Invoices.Couriersscript @invoice=15000000114, @result=1;
+EXEC Invoices.Couriersscript @invoice=15000000100, @result=4, @date='2020-10-11';
+GO
+
+
+/**** CALL-CENTER OPERATOR'S SCRIPT ****/
+SELECT invoice FROM Invoices.Primary_invoices
+WHERE storeroom_id = 2;
+GO
+
+CREATE PROCEDURE Invoices.Callcenterscript @invoice bigint, @result int, @date date
+AS
+BEGIN
+SET NOCOUNT ON;
+UPDATE Invoices.Invoices
+SET current_delivery_date = GETDATE()
+WHERE invoice_number=@invoice
+UPDATE Invoices.Invoices
+SET result_id = CASE WHEN @result=2 THEN @result ELSE 4 END
+WHERE invoice_number=@invoice
+UPDATE Invoices.Invoices
+SET current_delivery_date = CASE WHEN @result=2 THEN NULL ELSE @date END
+WHERE invoice_number=@invoice
+END
+GO
+
+EXEC Invoices.Callcenterscript @invoice=15000000101, @result=5, @date='2020-10-12';
+GO
+
+/**** INVENTORY ****/
+SELECT invoice_number FROM Invoices.Invoices
+WHERE state_id = 1;
+GO
+
+CREATE PROCEDURE Invoices.Inventory @invoice bigint
+AS
+BEGIN
+SET NOCOUNT ON;
+UPDATE Invoices.Invoices
+SET storeroom_id = CASE WHEN DATEDIFF(d, GETDATE(),current_delivery_date) = 1 THEN 1
+WHEN DATEDIFF(d, shelf_life, GETDATE())>=0 THEN 3
+WHEN result_id=2 THEN 3
+ELSE 2 END
+WHERE invoice_number=@invoice
+END
+GO
+
+EXEC Invoices.Inventory @invoice=15000000101;
+GO
+
+/**** RETURN INVOICES CREATION ****/
+SELECT invoice_number FROM Invoices.Invoices
+WHERE storeroom_id = 3;
+GO
+
+CREATE PROCEDURE Invoices.ReturnInvoiceCreation @invoice bigint
+AS
+BEGIN
+SET NOCOUNT ON;
+IF 3 = (SELECT storeroom_id FROM Invoices.Invoices WHERE invoice_number=@invoice)
+AND 0 =(SELECT is_return FROM Invoices.Invoices WHERE invoice_number=@invoice)
+INSERT INTO Invoices.Invoices (client_id, order_number, invoice_number, is_return, creation_date, shelf_life)
+VALUES ((SELECT client_id FROM Invoices.Invoices WHERE invoice_number=@invoice), CAST (@invoice AS nvarchar), 
+         NEXT VALUE FOR dbo.return_numbers, 1, GETDATE(), GETDATE())
+END
+GO
+
+EXEC Invoices.ReturnInvoiceCreation @invoice=15000000098;
+GO
+
+SELECT * FROM Invoices.Invoices;
+GO
