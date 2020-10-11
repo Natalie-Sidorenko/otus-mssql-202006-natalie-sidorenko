@@ -232,8 +232,8 @@ BEGIN
 END
 GO
 
-EXEC Invoices.Couriersscript @invoice=15000000114, @result=1;
-EXEC Invoices.Couriersscript @invoice=15000000100, @result=4, @date='2020-10-11';
+EXEC Invoices.Couriersscript @invoice=4000000007, @result=1;
+EXEC Invoices.Couriersscript @invoice=4000000008, @result=5, @date='2020-10-13';
 GO
 
 
@@ -280,7 +280,7 @@ WHERE invoice_number=@invoice
 END
 GO
 
-EXEC Invoices.Inventory @invoice=15000000101;
+EXEC Invoices.Inventory @invoice=4000000008;
 GO
 
 /**** RETURN INVOICES CREATION ****/
@@ -288,7 +288,7 @@ SELECT invoice_number FROM Invoices.Invoices
 WHERE storeroom_id = 3;
 GO
 
-CREATE PROCEDURE Invoices.ReturnInvoiceCreation @invoice bigint
+CREATE PROCEDURE Invoices.ReturnInvoiceCreation @invoice bigint, @returninvoice bigint OUT
 AS
 SET NOCOUNT ON;
 IF 3 = (SELECT storeroom_id FROM Invoices.Invoices WHERE invoice_number=@invoice)
@@ -297,16 +297,17 @@ BEGIN
 UPDATE Invoices.Invoices
 SET state_id=3
 WHERE invoice_number=@invoice;
-UPDATE Invoices.Invoices
-SET return_invoice_number = NEXT VALUE FOR dbo.return_numbers
-WHERE invoice_number=@invoice;
+SET @returninvoice = NEXT VALUE FOR dbo.return_numbers;
 INSERT INTO Invoices.Invoices (client_id, order_number, invoice_number, is_return, creation_date, shelf_life)
 VALUES ((SELECT client_id FROM Invoices.Invoices WHERE invoice_number=@invoice),
          CAST (@invoice AS nvarchar), 
-        (SELECT return_invoice_number FROM Invoices.Invoices WHERE invoice_number=@invoice),
+         @returninvoice,
 		 1,
 		 GETDATE(),
 		 '9999-12-31');
+UPDATE Invoices.Invoices
+SET return_invoice_number = @returninvoice
+WHERE invoice_number=@invoice;
 END
 GO
 
