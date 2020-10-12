@@ -226,19 +226,19 @@ BEGIN
  SET state_id = CASE WHEN @result=1 THEN 3 WHEN @result IN (2, 3, 4, 5) THEN 1 END
  WHERE invoice_number=@invoice;
  UPDATE Invoices.Invoices
- SET current_delivery_date= CASE WHEN @result IN (1, 2, 3, 4, 5) THEN @date ELSE GETDATE() END
+ SET current_delivery_date= CASE WHEN @result IN (3, 4, 5) THEN @date WHEN @result IN (1, 2) THEN NULL ELSE GETDATE() END
  WHERE invoice_number=@invoice;
  END
 END
 GO
 
-EXEC Invoices.Couriersscript @invoice=4000000007, @result=1;
-EXEC Invoices.Couriersscript @invoice=4000000008, @result=5, @date='2020-10-13';
+EXEC Invoices.Couriersscript @invoice=15000000171, @result=1;
+EXEC Invoices.Couriersscript @invoice=15000000157, @result=4, @date='2020-10-14';
 GO
 
 
 /**** CALL-CENTER OPERATOR'S SCRIPT ****/
-SELECT invoice FROM Invoices.Primary_invoices
+SELECT invoice_number FROM Invoices.Invoices
 WHERE storeroom_id = 2;
 GO
 
@@ -280,19 +280,20 @@ WHERE invoice_number=@invoice
 END
 GO
 
-EXEC Invoices.Inventory @invoice=4000000008;
+EXEC Invoices.Inventory @invoice=15000000159;
 GO
 
 /**** RETURN INVOICES CREATION ****/
 SELECT invoice_number FROM Invoices.Invoices
-WHERE storeroom_id = 3;
+WHERE storeroom_id = 3
+AND state_id = 1;
 GO
 
 CREATE PROCEDURE Invoices.ReturnInvoiceCreation @invoice bigint, @returninvoice bigint OUT
 AS
 SET NOCOUNT ON;
 IF 3 = (SELECT storeroom_id FROM Invoices.Invoices WHERE invoice_number=@invoice)
-AND 0 =(SELECT is_return FROM Invoices.Invoices WHERE invoice_number=@invoice)
+AND 1 =(SELECT state_id FROM Invoices.Invoices WHERE invoice_number=@invoice)
 BEGIN
 UPDATE Invoices.Invoices
 SET state_id=3
@@ -311,8 +312,10 @@ WHERE invoice_number=@invoice;
 END
 GO
 
-EXEC Invoices.ReturnInvoiceCreation @invoice=15000000098;
+EXEC Invoices.ReturnInvoiceCreation @invoice=15000000155, @returninvoice = NULL;
 GO
 
 SELECT * FROM Invoices.Invoices;
+GO
+SELECT * FROM History.Delivery_history;
 GO
