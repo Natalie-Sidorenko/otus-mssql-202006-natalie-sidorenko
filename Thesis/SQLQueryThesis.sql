@@ -68,12 +68,19 @@ CREATE TABLE Invoices.Invoices (
   storeroom_id INT NOT NULL REFERENCES Reference.Storerooms
   ); 
 GO
+CREATE TABLE History.Dates ([date] date NOT NULL PRIMARY KEY CLUSTERED);
+GO
 CREATE TABLE History.Delivery_history (
  [id]              bigint NOT NULL IDENTITY(1, 1) PRIMARY KEY CLUSTERED ,
  [invoice_number]  bigint NOT NULL REFERENCES Invoices.Invoices (invoice_number),
  [delivery_date]   date NOT NULL ,
  [delivery_result] int NOT NULL 
 );
+GO
+
+ALTER TABLE History.Delivery_history ADD [client_id] bigint NOT NULL REFERENCES Reference.Clients;
+ALTER TABLE History.Delivery_history ADD CONSTRAINT FK_delivery_result FOREIGN KEY (delivery_result) REFERENCES Reference.Delivery_results;
+ALTER TABLE History.Delivery_history ADD CONSTRAINT FK_delivery_date FOREIGN KEY (delivery_date) REFERENCES History.Dates;
 GO
 ALTER TABLE Invoices.Invoices ADD CONSTRAINT constr_invoice_numbers_sequence  DEFAULT (NEXT VALUE FOR dbo.primary_numbers) FOR invoice_number;
 ALTER TABLE Invoices.Invoices ADD CONSTRAINT constr_defaultddate DEFAULT (CAST (GETDATE()+1 AS DATE)) FOR current_delivery_date;
@@ -83,6 +90,7 @@ GO
 ALTER TABLE Invoices.Invoices ADD CONSTRAINT constr_storeroom DEFAULT (1) FOR storeroom_id;
 ALTER TABLE Invoices.Invoices ADD CONSTRAINT constr_state DEFAULT (1) FOR state_id;
 GO
+
 /**** INSERT REFERENCE DATA ****/
 INSERT INTO Reference.States (state_name) VALUES ('at storeroom'), ('with courier'), ('delivered');
 SELECT * FROM Reference.States;
@@ -168,18 +176,25 @@ SELECT * FROM Invoices.Invoices;
 GO
 
 /**** CREATE TRIGGER ON Invoices.Invoices FOR INSERT INTO History.Delivery_history ****/
+
 CREATE TRIGGER Delivery_result_Update
 ON Invoices.Invoices
  AFTER UPDATE
  AS   
 IF ( UPDATE (result_id))  
 BEGIN  
- INSERT INTO History.Delivery_history(invoice_number, delivery_date, delivery_result)
-	SELECT invoice_number, current_delivery_date, result_id
+ INSERT INTO History.Delivery_history(invoice_number, delivery_date, delivery_result, client_id)
+	SELECT invoice_number, current_delivery_date, result_id, client_id
 	FROM INSERTED
 END;  
 GO 
 SELECT * FROM History.Delivery_history;
+GO
+
+/**** INSERT DATE INTO HISTORY.DATES ****/
+INSERT INTO History.Dates ([date]) VALUES ('2020-10-15');
+GO
+SELECT * FROM History.Dates;
 GO
 
 /**** STORED PROCEDURES: GIVE TO COURIER ****/
@@ -232,8 +247,8 @@ BEGIN
 END
 GO
 
-EXEC Invoices.Couriersscript @invoice=15000000171, @result=1;
-EXEC Invoices.Couriersscript @invoice=15000000157, @result=4, @date='2020-10-14';
+EXEC Invoices.Couriersscript @invoice=4000000013, @result=1;
+EXEC Invoices.Couriersscript @invoice=15000000213, @result=4, @date='2020-10-14';
 GO
 
 
@@ -258,7 +273,7 @@ WHERE invoice_number=@invoice
 END
 GO
 
-EXEC Invoices.Callcenterscript @invoice=15000000101, @result=5, @date='2020-10-12';
+EXEC Invoices.Callcenterscript @invoice=15000000214, @result=4, @date='2020-10-15';
 GO
 
 /**** INVENTORY ****/
@@ -280,7 +295,7 @@ WHERE invoice_number=@invoice
 END
 GO
 
-EXEC Invoices.Inventory @invoice=15000000159;
+EXEC Invoices.Inventory @invoice=15000000174;
 GO
 
 /**** RETURN INVOICES CREATION ****/
@@ -312,7 +327,7 @@ WHERE invoice_number=@invoice;
 END
 GO
 
-EXEC Invoices.ReturnInvoiceCreation @invoice=15000000155, @returninvoice = NULL;
+EXEC Invoices.ReturnInvoiceCreation @invoice=15000000193, @returninvoice = NULL;
 GO
 
 SELECT * FROM Invoices.Invoices;
