@@ -1,0 +1,908 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ShowPlanXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.539" Build="15.0.2070.41" xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple StatementCompId="1" StatementEstRows="6127.65" StatementId="1" StatementOptmLevel="FULL" StatementOptmEarlyAbortReason="TimeOut" CardinalityEstimationModelVersion="130" StatementSubTreeCost="13.7532" StatementText="SELECT ord.CustomerID, det.StockItemID, SUM(det.UnitPrice), SUM(det.Quantity), COUNT(ord.OrderID)&#xD;&#xA;FROM Sales.Orders AS ord&#xD;&#xA;JOIN Sales.Invoices AS Inv&#xD;&#xA;ON Inv.OrderID = ord.OrderID&#xD;&#xA;JOIN #TempTable a&#xD;&#xA;ON a.CustomerID = Inv.CustomerID&#xD;&#xA;JOIN Sales.OrderLines AS det&#xD;&#xA;ON det.OrderID = ord.OrderID&#xD;&#xA;JOIN Sales.CustomerTransactions AS Trans&#xD;&#xA;ON Trans.InvoiceID = Inv.InvoiceID&#xD;&#xA;JOIN Warehouse.StockItemTransactions AS ItemTrans&#xD;&#xA;ON ItemTrans.StockItemID = det.StockItemID&#xD;&#xA;JOIN Warehouse.StockItems AS It&#xD;&#xA;ON It.StockItemID = det.StockItemID&#xD;&#xA;WHERE Inv.BillToCustomerID != ord.CustomerID&#xD;&#xA;AND It.SupplierId = 12&#xD;&#xA;AND Inv.InvoiceDate = ord.OrderDate&#xD;&#xA;GROUP BY ord.CustomerID, det.StockItemID&#xD;&#xA;ORDER BY ord.CustomerID, det.StockItemID" StatementType="SELECT" QueryHash="0xA61FA57C0811DE71" QueryPlanHash="0xB1FAB46572B5B439" RetrievedFromCache="true" StatementSqlHandle="0x0900B62C27BD48BF7347D4AC2831F50492250000000000000000000000000000000000000000000000000000" DatabaseContextSettingsId="2" ParentObjectId="0" BatchSqlHandle="0x020000002F946C054C5FA22E18DD136E4E28EFB017BF147E0000000000000000000000000000000000000000" StatementParameterizationType="0" SecurityPolicyApplied="false">
+          <StatementSetOptions ANSI_NULLS="true" ANSI_PADDING="true" ANSI_WARNINGS="true" ARITHABORT="true" CONCAT_NULL_YIELDS_NULL="true" NUMERIC_ROUNDABORT="false" QUOTED_IDENTIFIER="true" />
+          <QueryPlan DegreeOfParallelism="4" MemoryGrant="127688" CachedPlanSize="352" CompileTime="685" CompileCPU="337" CompileMemory="5528">
+            <ThreadStat Branches="1" UsedThreads="5">
+              <ThreadReservation NodeId="0" ReservedThreads="6" />
+            </ThreadStat>
+            <Warnings>
+              <MemoryGrantWarning GrantWarningKind="Excessive Grant" RequestedMemory="127688" GrantedMemory="127688" MaxUsedMemory="5888" />
+            </Warnings>
+            <MemoryGrantInfo SerialRequiredMemory="10392" SerialDesiredMemory="96320" RequiredMemory="41736" DesiredMemory="127688" RequestedMemory="127688" GrantWaitTime="0" GrantedMemory="127688" MaxUsedMemory="5888" MaxQueryMemory="149056" />
+            <OptimizerHardwareDependentProperties EstimatedAvailableMemoryGrant="103112" EstimatedPagesCached="25778" EstimatedAvailableDegreeOfParallelism="2" MaxCompileMemory="318312" />
+            <OptimizerStatsUsage>
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Statistics="[_WA_Sys_0000000A_7849DB76]" ModificationCount="902" SamplingPercent="19.3728" LastUpdate="2016-06-02T10:47:38.07" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Statistics="[FK_Sales_OrderLines_PackageTypeID]" ModificationCount="13673" SamplingPercent="29.4997" LastUpdate="2016-06-02T10:38:54.2" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Statistics="[FK_Sales_Invoices_CustomerID]" ModificationCount="4261" SamplingPercent="20.0848" LastUpdate="2016-06-02T10:38:35.48" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Statistics="[IX_Sales_OrderLines_AllocatedStockItems]" ModificationCount="3062" SamplingPercent="28.1404" LastUpdate="2016-06-02T10:47:36.99" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Statistics="[FK_Sales_Orders_PickedByPersonID]" ModificationCount="4751" SamplingPercent="100" LastUpdate="2016-06-02T10:43:25.64" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Statistics="[FK_Sales_Orders_CustomerID]" ModificationCount="5262" SamplingPercent="100" LastUpdate="2016-06-02T10:36:24.94" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Statistics="[PK_Sales_CustomerTransactions]" ModificationCount="0" SamplingPercent="100" LastUpdate="2016-06-06T11:06:59.31" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Statistics="[IX_Sales_OrderLines_Perf_20160301_01]" ModificationCount="3527" SamplingPercent="27.2022" LastUpdate="2016-06-02T10:48:37.96" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Statistics="[FK_Sales_Orders_ContactPersonID]" ModificationCount="2012" SamplingPercent="100" LastUpdate="2016-06-02T10:45:05.4" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Statistics="[IX_Sales_Invoices_ConfirmedDeliveryTime]" ModificationCount="3812" SamplingPercent="22.5708" LastUpdate="2016-06-02T10:45:05.2" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Statistics="[IX_Sales_OrderLines_Perf_20160301_02]" ModificationCount="3527" SamplingPercent="28.1018" LastUpdate="2016-06-02T10:46:56.85" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Statistics="[FK_Sales_Orders_SalespersonPersonID]" ModificationCount="5110" SamplingPercent="100" LastUpdate="2016-06-02T10:37:04.51" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Statistics="[PK_Sales_Orders]" ModificationCount="3966" SamplingPercent="100" LastUpdate="2016-06-02T10:39:54.25" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Statistics="[FK_Sales_OrderLines_OrderID]" ModificationCount="9009" SamplingPercent="28.9394" LastUpdate="2016-06-02T10:42:55.35" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Statistics="[_WA_Sys_00000007_44CA3770]" ModificationCount="0" SamplingPercent="100" LastUpdate="2020-10-19T18:00:50.31" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Statistics="[FK_Sales_Invoices_BillToCustomerID]" ModificationCount="7449" SamplingPercent="20.7164" LastUpdate="2016-06-02T10:29:18.25" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Statistics="[FK_Sales_Invoices_ContactPersonID]" ModificationCount="3987" SamplingPercent="20.0262" LastUpdate="2016-06-02T10:39:24.63" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Statistics="[FK_Sales_Invoices_SalespersonPersonID]" ModificationCount="5491" SamplingPercent="20.2525" LastUpdate="2016-06-02T10:34:55.87" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Statistics="[FK_Sales_Invoices_PackedByPersonID]" ModificationCount="4724" SamplingPercent="20.1274" LastUpdate="2016-06-02T10:37:24.87" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Statistics="[FK_Sales_CustomerTransactions_PaymentMethodID]" ModificationCount="0" SamplingPercent="100" LastUpdate="2016-06-06T11:06:59.67" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Statistics="[PK_Sales_OrderLines]" ModificationCount="7592" SamplingPercent="28.711" LastUpdate="2016-06-02T10:44:04.18" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Statistics="[FK_Sales_CustomerTransactions_TransactionTypeID]" ModificationCount="0" SamplingPercent="100" LastUpdate="2016-06-06T11:06:59.84" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Statistics="[FK_Sales_CustomerTransactions_InvoiceID]" ModificationCount="0" SamplingPercent="100" LastUpdate="2016-06-06T11:06:59.5" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItems]" Statistics="[FK_Warehouse_StockItems_SupplierID]" ModificationCount="0" SamplingPercent="100" LastUpdate="2020-10-19T17:51:28.84" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Statistics="[FK_Sales_Invoices_AccountsPersonID]" ModificationCount="3527" SamplingPercent="19.8185" LastUpdate="2016-06-02T10:40:44.41" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Statistics="[FK_Sales_Invoices_DeliveryMethodID]" ModificationCount="1604" SamplingPercent="19.5992" LastUpdate="2016-06-02T10:45:36.31" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItems]" Statistics="[PK_Warehouse_StockItems]" ModificationCount="8" SamplingPercent="100" LastUpdate="2016-06-02T10:07:35.2" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItemTransactions]" Statistics="[FK_Warehouse_StockItemTransactions_StockItemID]" ModificationCount="0" SamplingPercent="100" LastUpdate="2016-06-06T11:06:44.06" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Statistics="[IX_Sales_CustomerTransactions_IsFinalized]" ModificationCount="0" SamplingPercent="100" LastUpdate="2016-06-06T11:07:00.01" />
+              <StatisticsInfo Database="[tempdb]" Schema="[dbo]" Table="[#TempTable__________________________________________________________________________________________________________000000000004]" Statistics="[IX_TT_CustID]" ModificationCount="0" SamplingPercent="100" LastUpdate="2020-11-12T18:39:29.52" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Statistics="[FK_Sales_CustomerTransactions_CustomerID]" ModificationCount="0" SamplingPercent="100" LastUpdate="2016-06-06T11:06:59.35" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Statistics="[PK_Sales_Invoices]" ModificationCount="0" SamplingPercent="17.2061" LastUpdate="2016-06-02T10:54:55.62" />
+              <StatisticsInfo Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Statistics="[FK_Sales_Invoices_OrderID]" ModificationCount="3308" SamplingPercent="19.7896" LastUpdate="2016-06-02T10:41:15.07" />
+            </OptimizerStatsUsage>
+            <WaitStats>
+              <Wait WaitType="LATCH_EX" WaitTimeMs="8860" WaitCount="64" />
+              <Wait WaitType="PAGEIOLATCH_SH" WaitTimeMs="6323" WaitCount="164" />
+              <Wait WaitType="CXPACKET" WaitTimeMs="5308" WaitCount="29" />
+              <Wait WaitType="HTDELETE" WaitTimeMs="3404" WaitCount="48" />
+              <Wait WaitType="ASYNC_NETWORK_IO" WaitTimeMs="221" WaitCount="21" />
+              <Wait WaitType="MEMORY_ALLOCATION_EXT" WaitTimeMs="172" WaitCount="13373" />
+              <Wait WaitType="HTMEMO" WaitTimeMs="149" WaitCount="6" />
+              <Wait WaitType="HTREPARTITION" WaitTimeMs="94" WaitCount="42" />
+              <Wait WaitType="LATCH_SH" WaitTimeMs="73" WaitCount="11" />
+              <Wait WaitType="EXECSYNC" WaitTimeMs="35" WaitCount="90" />
+            </WaitStats>
+            <QueryTimeStats CpuTime="1646" ElapsedTime="5365" />
+            <RelOp AvgRowSize="40" EstimateCPU="0.0769284" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row" EstimateRows="6127.65" LogicalOp="Gather Streams" NodeId="0" Parallel="true" PhysicalOp="Parallelism" EstimatedTotalSubtreeCost="13.7532">
+              <OutputList>
+                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                <ColumnReference Column="Expr1011" />
+                <ColumnReference Column="Expr1012" />
+                <ColumnReference Column="Expr1013" />
+              </OutputList>
+              <RunTimeInformation>
+                <RunTimeCountersPerThread Thread="0" ActualRows="3619" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="5138" ActualCPUms="0" />
+              </RunTimeInformation>
+              <Parallelism>
+                <OrderBy>
+                  <OrderByColumn Ascending="true">
+                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                  </OrderByColumn>
+                  <OrderByColumn Ascending="true">
+                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                  </OrderByColumn>
+                </OrderBy>
+                <RelOp AvgRowSize="40" EstimateCPU="0.00858028" EstimateIO="0.00187688" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Batch" EstimateRows="6127.65" LogicalOp="Sort" NodeId="1" Parallel="true" PhysicalOp="Sort" EstimatedTotalSubtreeCost="13.6762">
+                  <OutputList>
+                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                    <ColumnReference Column="Expr1011" />
+                    <ColumnReference Column="Expr1012" />
+                    <ColumnReference Column="Expr1013" />
+                  </OutputList>
+                  <MemoryFractions Input="1" Output="1" />
+                  <RunTimeInformation>
+                    <RunTimeCountersPerThread Thread="4" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="4" ActualCPUms="2" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                    <RunTimeCountersPerThread Thread="3" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="2" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                    <RunTimeCountersPerThread Thread="2" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="4" ActualCPUms="2" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                    <RunTimeCountersPerThread Thread="1" ActualRows="3619" Batches="5" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="10" ActualCPUms="7" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                    <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                  </RunTimeInformation>
+                  <Sort Distinct="false">
+                    <OrderBy>
+                      <OrderByColumn Ascending="true">
+                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                      </OrderByColumn>
+                      <OrderByColumn Ascending="true">
+                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                      </OrderByColumn>
+                    </OrderBy>
+                    <RelOp AvgRowSize="40" EstimateCPU="0" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Batch" EstimateRows="6127.65" LogicalOp="Compute Scalar" NodeId="2" Parallel="true" PhysicalOp="Compute Scalar" EstimatedTotalSubtreeCost="13.6658">
+                      <OutputList>
+                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                        <ColumnReference Column="Expr1011" />
+                        <ColumnReference Column="Expr1012" />
+                        <ColumnReference Column="Expr1013" />
+                      </OutputList>
+                      <RunTimeInformation>
+                        <RunTimeCountersPerThread Thread="4" ActualRows="1609" Batches="2" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="0" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                        <RunTimeCountersPerThread Thread="3" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="0" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                        <RunTimeCountersPerThread Thread="2" ActualRows="2010" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="0" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                        <RunTimeCountersPerThread Thread="1" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="0" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                        <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                      </RunTimeInformation>
+                      <ComputeScalar>
+                        <DefinedValues>
+                          <DefinedValue>
+                            <ColumnReference Column="Expr1011" />
+                            <ScalarOperator ScalarString="CASE WHEN [Expr1238]=(0) THEN NULL ELSE [Expr1239] END">
+                              <IF>
+                                <Condition>
+                                  <ScalarOperator>
+                                    <Compare CompareOp="EQ">
+                                      <ScalarOperator>
+                                        <Identifier>
+                                          <ColumnReference Column="Expr1238" />
+                                        </Identifier>
+                                      </ScalarOperator>
+                                      <ScalarOperator>
+                                        <Const ConstValue="(0)" />
+                                      </ScalarOperator>
+                                    </Compare>
+                                  </ScalarOperator>
+                                </Condition>
+                                <Then>
+                                  <ScalarOperator>
+                                    <Const ConstValue="NULL" />
+                                  </ScalarOperator>
+                                </Then>
+                                <Else>
+                                  <ScalarOperator>
+                                    <Identifier>
+                                      <ColumnReference Column="Expr1239" />
+                                    </Identifier>
+                                  </ScalarOperator>
+                                </Else>
+                              </IF>
+                            </ScalarOperator>
+                          </DefinedValue>
+                          <DefinedValue>
+                            <ColumnReference Column="Expr1013" />
+                            <ScalarOperator ScalarString="CONVERT_IMPLICIT(int,[Expr1240],0)">
+                              <Convert DataType="int" Style="0" Implicit="true">
+                                <ScalarOperator>
+                                  <Identifier>
+                                    <ColumnReference Column="Expr1240" />
+                                  </Identifier>
+                                </ScalarOperator>
+                              </Convert>
+                            </ScalarOperator>
+                          </DefinedValue>
+                        </DefinedValues>
+                        <RelOp AvgRowSize="40" EstimateCPU="3.39634" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Batch" EstimateRows="6127.65" LogicalOp="Aggregate" NodeId="3" Parallel="true" PhysicalOp="Hash Match" EstimatedTotalSubtreeCost="13.6658">
+                          <OutputList>
+                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                            <ColumnReference Column="Expr1012" />
+                            <ColumnReference Column="Expr1238" />
+                            <ColumnReference Column="Expr1239" />
+                            <ColumnReference Column="Expr1240" />
+                          </OutputList>
+                          <MemoryFractions Input="0.225305" Output="0.225305" />
+                          <RunTimeInformation>
+                            <RunTimeCountersPerThread Thread="4" ActualRows="1609" Batches="2" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="2" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                            <RunTimeCountersPerThread Thread="3" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="430" ActualCPUms="421" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                            <RunTimeCountersPerThread Thread="2" ActualRows="2010" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="85" ActualCPUms="84" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                            <RunTimeCountersPerThread Thread="1" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="2" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                            <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                          </RunTimeInformation>
+                          <Hash>
+                            <DefinedValues>
+                              <DefinedValue>
+                                <ColumnReference Column="Expr1238" />
+                                <ScalarOperator ScalarString="COUNT_BIG([WideWorldImporters].[Sales].[OrderLines].[UnitPrice] as [det].[UnitPrice])">
+                                  <Aggregate AggType="COUNT_BIG" Distinct="false">
+                                    <ScalarOperator>
+                                      <Identifier>
+                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="UnitPrice" />
+                                      </Identifier>
+                                    </ScalarOperator>
+                                  </Aggregate>
+                                </ScalarOperator>
+                              </DefinedValue>
+                              <DefinedValue>
+                                <ColumnReference Column="Expr1239" />
+                                <ScalarOperator ScalarString="SUM([WideWorldImporters].[Sales].[OrderLines].[UnitPrice] as [det].[UnitPrice])">
+                                  <Aggregate AggType="SUM" Distinct="false">
+                                    <ScalarOperator>
+                                      <Identifier>
+                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="UnitPrice" />
+                                      </Identifier>
+                                    </ScalarOperator>
+                                  </Aggregate>
+                                </ScalarOperator>
+                              </DefinedValue>
+                              <DefinedValue>
+                                <ColumnReference Column="Expr1012" />
+                                <ScalarOperator ScalarString="SUM([WideWorldImporters].[Sales].[OrderLines].[Quantity] as [det].[Quantity])">
+                                  <Aggregate AggType="SUM" Distinct="false">
+                                    <ScalarOperator>
+                                      <Identifier>
+                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="Quantity" />
+                                      </Identifier>
+                                    </ScalarOperator>
+                                  </Aggregate>
+                                </ScalarOperator>
+                              </DefinedValue>
+                              <DefinedValue>
+                                <ColumnReference Column="Expr1240" />
+                                <ScalarOperator ScalarString="COUNT(*)">
+                                  <Aggregate AggType="COUNT*" Distinct="false" />
+                                </ScalarOperator>
+                              </DefinedValue>
+                            </DefinedValues>
+                            <HashKeysBuild>
+                              <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                              <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                            </HashKeysBuild>
+                            <BuildResidual>
+                              <ScalarOperator ScalarString="[WideWorldImporters].[Sales].[Orders].[CustomerID] as [ord].[CustomerID] = [WideWorldImporters].[Sales].[Orders].[CustomerID] as [ord].[CustomerID] AND [WideWorldImporters].[Sales].[OrderLines].[StockItemID] as [det].[StockItemID] = [WideWorldImporters].[Sales].[OrderLines].[StockItemID] as [det].[StockItemID]">
+                                <Logical Operation="AND">
+                                  <ScalarOperator>
+                                    <Compare CompareOp="IS">
+                                      <ScalarOperator>
+                                        <Identifier>
+                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                                        </Identifier>
+                                      </ScalarOperator>
+                                      <ScalarOperator>
+                                        <Identifier>
+                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                                        </Identifier>
+                                      </ScalarOperator>
+                                    </Compare>
+                                  </ScalarOperator>
+                                  <ScalarOperator>
+                                    <Compare CompareOp="IS">
+                                      <ScalarOperator>
+                                        <Identifier>
+                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                                        </Identifier>
+                                      </ScalarOperator>
+                                      <ScalarOperator>
+                                        <Identifier>
+                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                                        </Identifier>
+                                      </ScalarOperator>
+                                    </Compare>
+                                  </ScalarOperator>
+                                </Logical>
+                              </ScalarOperator>
+                            </BuildResidual>
+                            <RelOp AvgRowSize="28" EstimateCPU="0.865093" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Batch" EstimateRows="9926470" LogicalOp="Inner Join" NodeId="4" Parallel="true" PhysicalOp="Hash Match" EstimatedTotalSubtreeCost="10.2694">
+                              <OutputList>
+                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="Quantity" />
+                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="UnitPrice" />
+                              </OutputList>
+                              <MemoryFractions Input="0.205474" Output="0.205474" />
+                              <RunTimeInformation>
+                                <RunTimeCountersPerThread Thread="4" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="1009" ActualCPUms="1" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                <RunTimeCountersPerThread Thread="3" ActualRows="6848871" Batches="7645" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="220" ActualCPUms="217" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                <RunTimeCountersPerThread Thread="2" ActualRows="1150387" Batches="1288" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="565" ActualCPUms="45" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                <RunTimeCountersPerThread Thread="1" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="1008" ActualCPUms="1" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                              </RunTimeInformation>
+                              <Hash BitmapCreator="true">
+                                <DefinedValues>
+                                  <DefinedValue>
+                                    <ColumnReference Column="Opt_Bitmap1234" />
+                                  </DefinedValue>
+                                </DefinedValues>
+                                <HashKeysBuild>
+                                  <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItems]" Alias="[It]" Column="StockItemID" />
+                                </HashKeysBuild>
+                                <HashKeysProbe>
+                                  <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItemTransactions]" Alias="[ItemTrans]" Column="StockItemID" />
+                                </HashKeysProbe>
+                                <RelOp AvgRowSize="32" EstimateCPU="0.0183952" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Batch" EstimateRows="11370" LogicalOp="Inner Join" NodeId="5" Parallel="true" PhysicalOp="Hash Match" EstimatedTotalSubtreeCost="9.38298">
+                                  <OutputList>
+                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="Quantity" />
+                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="UnitPrice" />
+                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItems]" Alias="[It]" Column="StockItemID" />
+                                  </OutputList>
+                                  <MemoryFractions Input="0.0701052" Output="0.0701052" />
+                                  <RunTimeInformation>
+                                    <RunTimeCountersPerThread Thread="4" ActualRows="2352" Batches="4" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="14" ActualCPUms="14" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                    <RunTimeCountersPerThread Thread="3" ActualRows="906" Batches="2" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="11" ActualCPUms="2" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                    <RunTimeCountersPerThread Thread="2" ActualRows="2072" Batches="4" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="14" ActualCPUms="6" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                    <RunTimeCountersPerThread Thread="1" ActualRows="2224" Batches="4" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="11" ActualCPUms="2" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                    <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                  </RunTimeInformation>
+                                  <Hash BitmapCreator="true">
+                                    <DefinedValues>
+                                      <DefinedValue>
+                                        <ColumnReference Column="Opt_Bitmap1227" />
+                                      </DefinedValue>
+                                    </DefinedValues>
+                                    <HashKeysBuild>
+                                      <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="OrderID" />
+                                    </HashKeysBuild>
+                                    <HashKeysProbe>
+                                      <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="OrderID" />
+                                    </HashKeysProbe>
+                                    <RelOp AvgRowSize="32" EstimateCPU="0.00824719" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Batch" EstimateRows="15291.5" LogicalOp="Inner Join" NodeId="6" Parallel="true" PhysicalOp="Hash Match" EstimatedTotalSubtreeCost="0.0737166">
+                                      <OutputList>
+                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="OrderID" />
+                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="Quantity" />
+                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="UnitPrice" />
+                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItems]" Alias="[It]" Column="StockItemID" />
+                                      </OutputList>
+                                      <MemoryFractions Input="0.00279304" Output="0.00279304" />
+                                      <RunTimeInformation>
+                                        <RunTimeCountersPerThread Thread="4" ActualRows="5584" Batches="54" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="1" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                        <RunTimeCountersPerThread Thread="3" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="1" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                        <RunTimeCountersPerThread Thread="2" ActualRows="10272" Batches="100" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="1" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                        <RunTimeCountersPerThread Thread="1" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="1" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                        <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                      </RunTimeInformation>
+                                      <Hash BitmapCreator="true">
+                                        <DefinedValues>
+                                          <DefinedValue>
+                                            <ColumnReference Column="Opt_Bitmap1105" />
+                                          </DefinedValue>
+                                        </DefinedValues>
+                                        <HashKeysBuild>
+                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItems]" Alias="[It]" Column="StockItemID" />
+                                        </HashKeysBuild>
+                                        <HashKeysProbe>
+                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                                        </HashKeysProbe>
+                                        <RelOp AvgRowSize="11" EstimateCPU="0.0285281" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row" EstimateRows="15" LogicalOp="Distribute Streams" NodeId="7" Parallel="true" PhysicalOp="Parallelism" EstimatedTotalSubtreeCost="0.0318266">
+                                          <OutputList>
+                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItems]" Alias="[It]" Column="StockItemID" />
+                                          </OutputList>
+                                          <RunTimeInformation>
+                                            <RunTimeCountersPerThread Thread="4" ActualRows="3" Batches="1" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                            <RunTimeCountersPerThread Thread="3" ActualRows="4" Batches="1" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                            <RunTimeCountersPerThread Thread="2" ActualRows="4" Batches="1" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                            <RunTimeCountersPerThread Thread="1" ActualRows="4" Batches="1" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                            <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                          </RunTimeInformation>
+                                          <Parallelism PartitioningType="RoundRobin">
+                                            <RelOp AvgRowSize="11" EstimateCPU="0.0001735" EstimateIO="0.003125" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row" EstimateRows="15" EstimatedRowsRead="15" LogicalOp="Index Seek" NodeId="8" Parallel="false" PhysicalOp="Index Seek" EstimatedTotalSubtreeCost="0.0032985" TableCardinality="227">
+                                              <OutputList>
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItems]" Alias="[It]" Column="StockItemID" />
+                                              </OutputList>
+                                              <RunTimeInformation>
+                                                <RunTimeCountersPerThread Thread="1" ActualRows="15" ActualRowsRead="15" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" ActualScans="1" ActualLogicalReads="2" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                              </RunTimeInformation>
+                                              <IndexScan Ordered="true" ScanDirection="FORWARD" ForcedIndex="false" ForceSeek="false" ForceScan="false" NoExpandHint="false" Storage="RowStore">
+                                                <DefinedValues>
+                                                  <DefinedValue>
+                                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItems]" Alias="[It]" Column="StockItemID" />
+                                                  </DefinedValue>
+                                                </DefinedValues>
+                                                <Object Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItems]" Index="[FK_Warehouse_StockItems_SupplierID]" Alias="[It]" IndexKind="NonClustered" Storage="RowStore" />
+                                                <SeekPredicates>
+                                                  <SeekPredicateNew>
+                                                    <SeekKeys>
+                                                      <Prefix ScanType="EQ">
+                                                        <RangeColumns>
+                                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItems]" Alias="[It]" Column="SupplierID" />
+                                                        </RangeColumns>
+                                                        <RangeExpressions>
+                                                          <ScalarOperator ScalarString="(12)">
+                                                            <Const ConstValue="(12)" />
+                                                          </ScalarOperator>
+                                                        </RangeExpressions>
+                                                      </Prefix>
+                                                    </SeekKeys>
+                                                  </SeekPredicateNew>
+                                                </SeekPredicates>
+                                              </IndexScan>
+                                            </RelOp>
+                                          </Parallelism>
+                                        </RelOp>
+                                        <RelOp AvgRowSize="40" EstimateCPU="0.0127355" EstimateIO="0.0209028" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Batch" EstimateRows="15291.5" EstimatedRowsRead="231412" LogicalOp="Index Scan" NodeId="12" Parallel="true" PhysicalOp="Index Scan" EstimatedTotalSubtreeCost="0.0336383" TableCardinality="231412">
+                                          <OutputList>
+                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="OrderLineID" />
+                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="OrderID" />
+                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="Quantity" />
+                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="UnitPrice" />
+                                            <ColumnReference Column="Generation1235" />
+                                          </OutputList>
+                                          <RunTimeInformation>
+                                            <RunTimeCountersPerThread Thread="4" ActualRows="5584" Batches="54" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="69" ActualCPUms="8" ActualScans="1" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                            <RunTimeCountersPerThread Thread="3" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="0" ActualCPUms="0" ActualScans="1" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                            <RunTimeCountersPerThread Thread="2" ActualRows="10272" Batches="100" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="68" ActualCPUms="5" ActualScans="1" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" SegmentReads="1" SegmentSkips="0" />
+                                            <RunTimeCountersPerThread Thread="1" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="0" ActualCPUms="0" ActualScans="1" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                            <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                          </RunTimeInformation>
+                                          <IndexScan Ordered="false" ForcedIndex="false" ForceSeek="false" ForceScan="false" NoExpandHint="false" Storage="ColumnStore">
+                                            <DefinedValues>
+                                              <DefinedValue>
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="OrderLineID" />
+                                              </DefinedValue>
+                                              <DefinedValue>
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="OrderID" />
+                                              </DefinedValue>
+                                              <DefinedValue>
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                                              </DefinedValue>
+                                              <DefinedValue>
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="Quantity" />
+                                              </DefinedValue>
+                                              <DefinedValue>
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="UnitPrice" />
+                                              </DefinedValue>
+                                              <DefinedValue>
+                                                <ColumnReference Column="Generation1235" />
+                                              </DefinedValue>
+                                            </DefinedValues>
+                                            <Object Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Index="[NCCX_Sales_OrderLines]" Alias="[det]" IndexKind="NonClustered" Storage="ColumnStore" />
+                                            <Predicate>
+                                              <ScalarOperator ScalarString="PROBE([Opt_Bitmap1105],[WideWorldImporters].[Sales].[OrderLines].[StockItemID] as [det].[StockItemID])">
+                                                <Intrinsic FunctionName="PROBE">
+                                                  <ScalarOperator>
+                                                    <Identifier>
+                                                      <ColumnReference Column="Opt_Bitmap1105" />
+                                                    </Identifier>
+                                                  </ScalarOperator>
+                                                  <ScalarOperator>
+                                                    <Identifier>
+                                                      <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[OrderLines]" Alias="[det]" Column="StockItemID" />
+                                                    </Identifier>
+                                                  </ScalarOperator>
+                                                </Intrinsic>
+                                              </ScalarOperator>
+                                            </Predicate>
+                                          </IndexScan>
+                                        </RelOp>
+                                      </Hash>
+                                    </RelOp>
+                                    <RelOp AvgRowSize="15" EstimateCPU="0.00781276" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Batch" EstimateRows="4582.27" LogicalOp="Inner Join" NodeId="13" Parallel="true" PhysicalOp="Hash Match" EstimatedTotalSubtreeCost="9.29087">
+                                      <OutputList>
+                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="OrderID" />
+                                      </OutputList>
+                                      <MemoryFractions Input="0.0378922" Output="0.0378922" />
+                                      <RunTimeInformation>
+                                        <RunTimeCountersPerThread Thread="4" ActualRows="2129" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="5" ActualCPUms="3" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                        <RunTimeCountersPerThread Thread="3" ActualRows="833" Batches="1" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="22" ActualCPUms="6" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                        <RunTimeCountersPerThread Thread="2" ActualRows="1896" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="14" ActualCPUms="5" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                        <RunTimeCountersPerThread Thread="1" ActualRows="2021" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="10" ActualCPUms="3" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                        <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                      </RunTimeInformation>
+                                      <Hash BitmapCreator="true">
+                                        <DefinedValues>
+                                          <DefinedValue>
+                                            <ColumnReference Column="Opt_Bitmap1229" />
+                                          </DefinedValue>
+                                        </DefinedValues>
+                                        <HashKeysBuild>
+                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceID" />
+                                        </HashKeysBuild>
+                                        <HashKeysProbe>
+                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Alias="[Trans]" Column="InvoiceID" />
+                                        </HashKeysProbe>
+                                        <ProbeResidual>
+                                          <ScalarOperator ScalarString="[WideWorldImporters].[Sales].[CustomerTransactions].[InvoiceID] as [Trans].[InvoiceID]=[WideWorldImporters].[Sales].[Invoices].[InvoiceID] as [Inv].[InvoiceID]">
+                                            <Compare CompareOp="EQ">
+                                              <ScalarOperator>
+                                                <Identifier>
+                                                  <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Alias="[Trans]" Column="InvoiceID" />
+                                                </Identifier>
+                                              </ScalarOperator>
+                                              <ScalarOperator>
+                                                <Identifier>
+                                                  <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceID" />
+                                                </Identifier>
+                                              </ScalarOperator>
+                                            </Compare>
+                                          </ScalarOperator>
+                                        </ProbeResidual>
+                                        <RelOp AvgRowSize="19" EstimateCPU="0.00821086" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Batch" EstimateRows="5128.83" LogicalOp="Inner Join" NodeId="14" Parallel="true" PhysicalOp="Hash Match" EstimatedTotalSubtreeCost="9.02861">
+                                          <OutputList>
+                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceID" />
+                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="OrderID" />
+                                          </OutputList>
+                                          <MemoryFractions Input="0.011079" Output="0.011079" />
+                                          <RunTimeInformation>
+                                            <RunTimeCountersPerThread Thread="4" ActualRows="1227" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="36" ActualCPUms="14" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                            <RunTimeCountersPerThread Thread="3" ActualRows="2572" Batches="5" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="31" ActualCPUms="16" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                            <RunTimeCountersPerThread Thread="2" ActualRows="1314" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="42" ActualCPUms="17" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                            <RunTimeCountersPerThread Thread="1" ActualRows="1766" Batches="4" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="26" ActualCPUms="19" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                            <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                          </RunTimeInformation>
+                                          <Hash BitmapCreator="true">
+                                            <DefinedValues>
+                                              <DefinedValue>
+                                                <ColumnReference Column="Opt_Bitmap1228" />
+                                              </DefinedValue>
+                                            </DefinedValues>
+                                            <HashKeysBuild>
+                                              <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="OrderID" />
+                                              <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceDate" />
+                                            </HashKeysBuild>
+                                            <HashKeysProbe>
+                                              <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderID" />
+                                              <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderDate" />
+                                            </HashKeysProbe>
+                                            <ProbeResidual>
+                                              <ScalarOperator ScalarString="[WideWorldImporters].[Sales].[Invoices].[OrderID] as [Inv].[OrderID]=[WideWorldImporters].[Sales].[Orders].[OrderID] as [ord].[OrderID] AND [WideWorldImporters].[Sales].[Invoices].[InvoiceDate] as [Inv].[InvoiceDate]=[WideWorldImporters].[Sales].[Orders].[OrderDate] as [ord].[OrderDate] AND [WideWorldImporters].[Sales].[Invoices].[BillToCustomerID] as [Inv].[BillToCustomerID]&lt;&gt;[WideWorldImporters].[Sales].[Orders].[CustomerID] as [ord].[CustomerID]">
+                                                <Logical Operation="AND">
+                                                  <ScalarOperator>
+                                                    <Compare CompareOp="EQ">
+                                                      <ScalarOperator>
+                                                        <Identifier>
+                                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="OrderID" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                      <ScalarOperator>
+                                                        <Identifier>
+                                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderID" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                    </Compare>
+                                                  </ScalarOperator>
+                                                  <ScalarOperator>
+                                                    <Compare CompareOp="EQ">
+                                                      <ScalarOperator>
+                                                        <Identifier>
+                                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceDate" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                      <ScalarOperator>
+                                                        <Identifier>
+                                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderDate" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                    </Compare>
+                                                  </ScalarOperator>
+                                                  <ScalarOperator>
+                                                    <Compare CompareOp="NE">
+                                                      <ScalarOperator>
+                                                        <Identifier>
+                                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="BillToCustomerID" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                      <ScalarOperator>
+                                                        <Identifier>
+                                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                    </Compare>
+                                                  </ScalarOperator>
+                                                </Logical>
+                                              </ScalarOperator>
+                                            </ProbeResidual>
+                                            <RelOp AvgRowSize="22" EstimateCPU="0.00400601" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Batch" EstimateRows="5128.83" LogicalOp="Inner Join" NodeId="15" Parallel="true" PhysicalOp="Hash Match" EstimatedTotalSubtreeCost="8.46561">
+                                              <OutputList>
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceID" />
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="BillToCustomerID" />
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="OrderID" />
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceDate" />
+                                              </OutputList>
+                                              <MemoryFractions Input="0.00288614" Output="0.00288614" />
+                                              <RunTimeInformation>
+                                                <RunTimeCountersPerThread Thread="4" ActualRows="2633" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="416" ActualCPUms="4" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                <RunTimeCountersPerThread Thread="3" ActualRows="2586" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="59" ActualCPUms="1" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                <RunTimeCountersPerThread Thread="2" ActualRows="2931" Batches="4" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="2" ActualCPUms="1" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                <RunTimeCountersPerThread Thread="1" ActualRows="2572" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="435" ActualCPUms="2" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                              </RunTimeInformation>
+                                              <Hash BitmapCreator="true">
+                                                <DefinedValues>
+                                                  <DefinedValue>
+                                                    <ColumnReference Column="Opt_Bitmap1163" />
+                                                  </DefinedValue>
+                                                </DefinedValues>
+                                                <HashKeysBuild>
+                                                  <ColumnReference Table="#TempTable" Alias="[a]" Column="CustomerID" />
+                                                </HashKeysBuild>
+                                                <HashKeysProbe>
+                                                  <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="CustomerID" />
+                                                </HashKeysProbe>
+                                                <ProbeResidual>
+                                                  <ScalarOperator ScalarString="#TempTable.[CustomerID] as [a].[CustomerID]=[WideWorldImporters].[Sales].[Invoices].[CustomerID] as [Inv].[CustomerID]">
+                                                    <Compare CompareOp="EQ">
+                                                      <ScalarOperator>
+                                                        <Identifier>
+                                                          <ColumnReference Table="#TempTable" Alias="[a]" Column="CustomerID" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                      <ScalarOperator>
+                                                        <Identifier>
+                                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="CustomerID" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                    </Compare>
+                                                  </ScalarOperator>
+                                                </ProbeResidual>
+                                                <RelOp AvgRowSize="11" EstimateCPU="0.0003326" EstimateIO="0.00386574" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row" EstimateRows="462" EstimatedRowsRead="462" LogicalOp="Clustered Index Scan" NodeId="16" Parallel="true" PhysicalOp="Clustered Index Scan" EstimatedTotalSubtreeCost="0.00419834" TableCardinality="462">
+                                                  <OutputList>
+                                                    <ColumnReference Table="#TempTable" Alias="[a]" Column="CustomerID" />
+                                                  </OutputList>
+                                                  <RunTimeInformation>
+                                                    <RunTimeCountersPerThread Thread="4" ActualRows="369" ActualRowsRead="369" Batches="1" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="73" ActualCPUms="0" ActualScans="1" ActualLogicalReads="3" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                    <RunTimeCountersPerThread Thread="3" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="29" ActualCPUms="0" ActualScans="1" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                    <RunTimeCountersPerThread Thread="2" ActualRows="93" ActualRowsRead="93" Batches="1" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="73" ActualCPUms="0" ActualScans="1" ActualLogicalReads="2" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                    <RunTimeCountersPerThread Thread="1" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="29" ActualCPUms="0" ActualScans="1" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                    <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" ActualScans="1" ActualLogicalReads="2" ActualPhysicalReads="1" ActualReadAheads="16" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                  </RunTimeInformation>
+                                                  <IndexScan Ordered="false" ForcedIndex="false" ForceScan="false" NoExpandHint="false" Storage="RowStore">
+                                                    <DefinedValues>
+                                                      <DefinedValue>
+                                                        <ColumnReference Table="#TempTable" Alias="[a]" Column="CustomerID" />
+                                                      </DefinedValue>
+                                                    </DefinedValues>
+                                                    <Object Database="[tempdb]" Schema="[dbo]" Table="[#TempTable]" Index="[IX_TT_CustID]" Alias="[a]" Storage="RowStore" />
+                                                  </IndexScan>
+                                                </RelOp>
+                                                <RelOp AvgRowSize="26" EstimateCPU="0.038859" EstimateIO="8.41498" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row" EstimateRows="7051" LogicalOp="Filter" NodeId="17" Parallel="true" PhysicalOp="Filter" EstimatedTotalSubtreeCost="8.45384">
+                                                  <OutputList>
+                                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceID" />
+                                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="CustomerID" />
+                                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="BillToCustomerID" />
+                                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="OrderID" />
+                                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceDate" />
+                                                  </OutputList>
+                                                  <RunTimeInformation>
+                                                    <RunTimeCountersPerThread Thread="4" ActualRows="2633" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="2976" ActualCPUms="120" />
+                                                    <RunTimeCountersPerThread Thread="3" ActualRows="2586" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="3377" ActualCPUms="89" />
+                                                    <RunTimeCountersPerThread Thread="2" ActualRows="2931" Batches="4" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="3390" ActualCPUms="124" />
+                                                    <RunTimeCountersPerThread Thread="1" ActualRows="2572" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="3001" ActualCPUms="118" />
+                                                    <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                                  </RunTimeInformation>
+                                                  <Filter StartupExpression="false">
+                                                    <RelOp AvgRowSize="26" EstimateCPU="0.038859" EstimateIO="8.41498" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row" EstimateRows="70510" EstimatedRowsRead="70510" LogicalOp="Clustered Index Scan" NodeId="18" Parallel="true" PhysicalOp="Clustered Index Scan" EstimatedTotalSubtreeCost="8.45384" TableCardinality="70510">
+                                                      <OutputList>
+                                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceID" />
+                                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="CustomerID" />
+                                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="BillToCustomerID" />
+                                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="OrderID" />
+                                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceDate" />
+                                                      </OutputList>
+                                                      <RunTimeInformation>
+                                                        <RunTimeCountersPerThread Thread="4" ActualRows="17325" ActualRowsRead="17325" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="2965" ActualCPUms="110" ActualScans="1" ActualLogicalReads="2834" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                        <RunTimeCountersPerThread Thread="3" ActualRows="17070" ActualRowsRead="17070" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="3367" ActualCPUms="79" ActualScans="1" ActualLogicalReads="2813" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                        <RunTimeCountersPerThread Thread="2" ActualRows="19297" ActualRowsRead="19297" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="3380" ActualCPUms="113" ActualScans="1" ActualLogicalReads="3137" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                        <RunTimeCountersPerThread Thread="1" ActualRows="16818" ActualRowsRead="16818" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="2991" ActualCPUms="108" ActualScans="1" ActualLogicalReads="2758" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                        <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" ActualScans="1" ActualLogicalReads="83" ActualPhysicalReads="3" ActualReadAheads="11381" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                      </RunTimeInformation>
+                                                      <IndexScan Ordered="false" ForcedIndex="false" ForceScan="false" NoExpandHint="false" Storage="RowStore">
+                                                        <DefinedValues>
+                                                          <DefinedValue>
+                                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceID" />
+                                                          </DefinedValue>
+                                                          <DefinedValue>
+                                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="CustomerID" />
+                                                          </DefinedValue>
+                                                          <DefinedValue>
+                                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="BillToCustomerID" />
+                                                          </DefinedValue>
+                                                          <DefinedValue>
+                                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="OrderID" />
+                                                          </DefinedValue>
+                                                          <DefinedValue>
+                                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="InvoiceDate" />
+                                                          </DefinedValue>
+                                                        </DefinedValues>
+                                                        <Object Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Index="[PK_Sales_Invoices]" Alias="[Inv]" IndexKind="Clustered" Storage="RowStore" />
+                                                      </IndexScan>
+                                                    </RelOp>
+                                                    <Predicate>
+                                                      <ScalarOperator ScalarString="PROBE([Opt_Bitmap1227],[WideWorldImporters].[Sales].[Invoices].[OrderID] as [Inv].[OrderID]) AND PROBE([Opt_Bitmap1163],[WideWorldImporters].[Sales].[Invoices].[CustomerID] as [Inv].[CustomerID])">
+                                                        <Logical Operation="AND">
+                                                          <ScalarOperator>
+                                                            <Intrinsic FunctionName="PROBE">
+                                                              <ScalarOperator>
+                                                                <Identifier>
+                                                                  <ColumnReference Column="Opt_Bitmap1227" />
+                                                                </Identifier>
+                                                              </ScalarOperator>
+                                                              <ScalarOperator>
+                                                                <Identifier>
+                                                                  <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="OrderID" />
+                                                                </Identifier>
+                                                              </ScalarOperator>
+                                                            </Intrinsic>
+                                                          </ScalarOperator>
+                                                          <ScalarOperator>
+                                                            <Intrinsic FunctionName="PROBE">
+                                                              <ScalarOperator>
+                                                                <Identifier>
+                                                                  <ColumnReference Column="Opt_Bitmap1163" />
+                                                                </Identifier>
+                                                              </ScalarOperator>
+                                                              <ScalarOperator>
+                                                                <Identifier>
+                                                                  <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Invoices]" Alias="[Inv]" Column="CustomerID" />
+                                                                </Identifier>
+                                                              </ScalarOperator>
+                                                            </Intrinsic>
+                                                          </ScalarOperator>
+                                                        </Logical>
+                                                      </ScalarOperator>
+                                                    </Predicate>
+                                                  </Filter>
+                                                </RelOp>
+                                              </Hash>
+                                            </RelOp>
+                                            <RelOp AvgRowSize="18" EstimateCPU="0.0405558" EstimateIO="0.512014" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row" EstimateRows="7359.5" LogicalOp="Filter" NodeId="19" Parallel="true" PhysicalOp="Filter" EstimatedTotalSubtreeCost="0.55257">
+                                              <OutputList>
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderID" />
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderDate" />
+                                              </OutputList>
+                                              <RunTimeInformation>
+                                                <RunTimeCountersPerThread Thread="4" ActualRows="1964" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="493" ActualCPUms="35" />
+                                                <RunTimeCountersPerThread Thread="3" ActualRows="3994" Batches="5" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="497" ActualCPUms="38" />
+                                                <RunTimeCountersPerThread Thread="2" ActualRows="2046" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="482" ActualCPUms="20" />
+                                                <RunTimeCountersPerThread Thread="1" ActualRows="2711" Batches="4" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="498" ActualCPUms="27" />
+                                                <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                              </RunTimeInformation>
+                                              <Filter StartupExpression="false">
+                                                <RelOp AvgRowSize="18" EstimateCPU="0.0405558" EstimateIO="0.512014" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row" EstimateRows="73595" EstimatedRowsRead="73595" LogicalOp="Clustered Index Scan" NodeId="20" Parallel="true" PhysicalOp="Clustered Index Scan" EstimatedTotalSubtreeCost="0.55257" TableCardinality="73595">
+                                                  <OutputList>
+                                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderID" />
+                                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderDate" />
+                                                  </OutputList>
+                                                  <RunTimeInformation>
+                                                    <RunTimeCountersPerThread Thread="4" ActualRows="13483" ActualRowsRead="13483" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="483" ActualCPUms="25" ActualScans="1" ActualLogicalReads="132" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                    <RunTimeCountersPerThread Thread="3" ActualRows="27178" ActualRowsRead="27178" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="475" ActualCPUms="16" ActualScans="1" ActualLogicalReads="266" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                    <RunTimeCountersPerThread Thread="2" ActualRows="13696" ActualRowsRead="13696" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="470" ActualCPUms="9" ActualScans="1" ActualLogicalReads="134" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                    <RunTimeCountersPerThread Thread="1" ActualRows="19238" ActualRowsRead="19238" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="484" ActualCPUms="12" ActualScans="1" ActualLogicalReads="188" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                    <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" ActualScans="1" ActualLogicalReads="5" ActualPhysicalReads="0" ActualReadAheads="677" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                  </RunTimeInformation>
+                                                  <IndexScan Ordered="false" ForcedIndex="false" ForceScan="false" NoExpandHint="false" Storage="RowStore">
+                                                    <DefinedValues>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderID" />
+                                                      </DefinedValue>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="CustomerID" />
+                                                      </DefinedValue>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderDate" />
+                                                      </DefinedValue>
+                                                    </DefinedValues>
+                                                    <Object Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Index="[PK_Sales_Orders]" Alias="[ord]" IndexKind="Clustered" Storage="RowStore" />
+                                                  </IndexScan>
+                                                </RelOp>
+                                                <Predicate>
+                                                  <ScalarOperator ScalarString="PROBE([Opt_Bitmap1228],[WideWorldImporters].[Sales].[Orders].[OrderID] as [ord].[OrderID],[WideWorldImporters].[Sales].[Orders].[OrderDate] as [ord].[OrderDate])">
+                                                    <Intrinsic FunctionName="PROBE">
+                                                      <ScalarOperator>
+                                                        <Identifier>
+                                                          <ColumnReference Column="Opt_Bitmap1228" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                      <ScalarOperator>
+                                                        <Identifier>
+                                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderID" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                      <ScalarOperator>
+                                                        <Identifier>
+                                                          <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[Orders]" Alias="[ord]" Column="OrderDate" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                    </Intrinsic>
+                                                  </ScalarOperator>
+                                                </Predicate>
+                                              </Filter>
+                                            </RelOp>
+                                          </Hash>
+                                        </RelOp>
+                                        <RelOp AvgRowSize="11" EstimateCPU="0.0541374" EstimateIO="0.199329" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row" EstimateRows="9714.7" LogicalOp="Filter" NodeId="21" Parallel="true" PhysicalOp="Filter" EstimatedTotalSubtreeCost="0.253466">
+                                          <OutputList>
+                                            <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Alias="[Trans]" Column="InvoiceID" />
+                                          </OutputList>
+                                          <RunTimeInformation>
+                                            <RunTimeCountersPerThread Thread="4" ActualRows="2129" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="27" ActualCPUms="27" />
+                                            <RunTimeCountersPerThread Thread="3" ActualRows="833" Batches="1" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="12" ActualCPUms="12" />
+                                            <RunTimeCountersPerThread Thread="2" ActualRows="1896" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="24" ActualCPUms="24" />
+                                            <RunTimeCountersPerThread Thread="1" ActualRows="2021" Batches="3" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="26" ActualCPUms="26" />
+                                            <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                          </RunTimeInformation>
+                                          <Filter StartupExpression="false">
+                                            <RelOp AvgRowSize="11" EstimateCPU="0.0541374" EstimateIO="0.199329" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row" EstimateRows="97147" EstimatedRowsRead="97147" LogicalOp="Index Scan" NodeId="22" Parallel="true" Partitioned="true" PhysicalOp="Index Scan" EstimatedTotalSubtreeCost="0.253466" TableCardinality="97147">
+                                              <OutputList>
+                                                <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Alias="[Trans]" Column="InvoiceID" />
+                                              </OutputList>
+                                              <RunTimeInformation>
+                                                <RunTimeCountersPerThread Thread="4" ActualRows="30885" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="18" ActualCPUms="17" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                <RunTimeCountersPerThread Thread="3" ActualRows="12809" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="8" ActualCPUms="8" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                <RunTimeCountersPerThread Thread="2" ActualRows="25536" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="17" ActualCPUms="17" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                <RunTimeCountersPerThread Thread="1" ActualRows="27917" Batches="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row" ActualElapsedms="19" ActualCPUms="19" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                                <RunTimeCountersPerThread Thread="0" ActualRows="0" ActualRowsRead="85165" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" ActualScans="5" ActualLogicalReads="261" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                              </RunTimeInformation>
+                                              <RunTimePartitionSummary>
+                                                <PartitionsAccessed PartitionCount="5">
+                                                  <PartitionRange Start="1" End="5" />
+                                                </PartitionsAccessed>
+                                              </RunTimePartitionSummary>
+                                              <IndexScan Ordered="false" ForcedIndex="false" ForceSeek="false" ForceScan="false" NoExpandHint="false" Storage="RowStore">
+                                                <DefinedValues>
+                                                  <DefinedValue>
+                                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Alias="[Trans]" Column="InvoiceID" />
+                                                  </DefinedValue>
+                                                </DefinedValues>
+                                                <Object Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Index="[FK_Sales_CustomerTransactions_InvoiceID]" Alias="[Trans]" IndexKind="NonClustered" Storage="RowStore" />
+                                              </IndexScan>
+                                            </RelOp>
+                                            <Predicate>
+                                              <ScalarOperator ScalarString="PROBE([Opt_Bitmap1229],[WideWorldImporters].[Sales].[CustomerTransactions].[InvoiceID] as [Trans].[InvoiceID])">
+                                                <Intrinsic FunctionName="PROBE">
+                                                  <ScalarOperator>
+                                                    <Identifier>
+                                                      <ColumnReference Column="Opt_Bitmap1229" />
+                                                    </Identifier>
+                                                  </ScalarOperator>
+                                                  <ScalarOperator>
+                                                    <Identifier>
+                                                      <ColumnReference Database="[WideWorldImporters]" Schema="[Sales]" Table="[CustomerTransactions]" Alias="[Trans]" Column="InvoiceID" />
+                                                    </Identifier>
+                                                  </ScalarOperator>
+                                                </Intrinsic>
+                                              </ScalarOperator>
+                                            </Predicate>
+                                          </Filter>
+                                        </RelOp>
+                                      </Hash>
+                                    </RelOp>
+                                  </Hash>
+                                </RelOp>
+                                <RelOp AvgRowSize="11" EstimateCPU="0.0130245" EstimateIO="0.00831019" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Batch" EstimateRows="23666.7" EstimatedRowsRead="23666.7" LogicalOp="Clustered Index Scan" NodeId="24" Parallel="true" PhysicalOp="Clustered Index Scan" EstimatedTotalSubtreeCost="0.0213347" TableCardinality="236667">
+                                  <OutputList>
+                                    <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItemTransactions]" Alias="[ItemTrans]" Column="StockItemID" />
+                                  </OutputList>
+                                  <RunTimeInformation>
+                                    <RunTimeCountersPerThread Thread="4" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="0" ActualCPUms="0" ActualScans="1" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                    <RunTimeCountersPerThread Thread="3" ActualRows="13597" Batches="50" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="359" ActualCPUms="2" ActualScans="1" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" SegmentReads="1" SegmentSkips="0" />
+                                    <RunTimeCountersPerThread Thread="2" ActualRows="2279" Batches="12" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="358" ActualCPUms="3" ActualScans="1" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                    <RunTimeCountersPerThread Thread="1" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="1" ActualExecutionMode="Batch" ActualElapsedms="0" ActualCPUms="0" ActualScans="1" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" />
+                                    <RunTimeCountersPerThread Thread="0" ActualRows="0" Batches="0" ActualEndOfScans="0" ActualExecutions="0" ActualExecutionMode="Row" ActualElapsedms="0" ActualCPUms="0" />
+                                  </RunTimeInformation>
+                                  <IndexScan Ordered="false" ForcedIndex="false" ForceSeek="false" ForceScan="false" NoExpandHint="false" Storage="ColumnStore">
+                                    <DefinedValues>
+                                      <DefinedValue>
+                                        <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItemTransactions]" Alias="[ItemTrans]" Column="StockItemID" />
+                                      </DefinedValue>
+                                    </DefinedValues>
+                                    <Object Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItemTransactions]" Index="[CCX_Warehouse_StockItemTransactions]" Alias="[ItemTrans]" IndexKind="Clustered" Storage="ColumnStore" />
+                                    <Predicate>
+                                      <ScalarOperator ScalarString="PROBE([Opt_Bitmap1234],[WideWorldImporters].[Warehouse].[StockItemTransactions].[StockItemID] as [ItemTrans].[StockItemID])">
+                                        <Intrinsic FunctionName="PROBE">
+                                          <ScalarOperator>
+                                            <Identifier>
+                                              <ColumnReference Column="Opt_Bitmap1234" />
+                                            </Identifier>
+                                          </ScalarOperator>
+                                          <ScalarOperator>
+                                            <Identifier>
+                                              <ColumnReference Database="[WideWorldImporters]" Schema="[Warehouse]" Table="[StockItemTransactions]" Alias="[ItemTrans]" Column="StockItemID" />
+                                            </Identifier>
+                                          </ScalarOperator>
+                                        </Intrinsic>
+                                      </ScalarOperator>
+                                    </Predicate>
+                                  </IndexScan>
+                                </RelOp>
+                              </Hash>
+                            </RelOp>
+                          </Hash>
+                        </RelOp>
+                      </ComputeScalar>
+                    </RelOp>
+                  </Sort>
+                </RelOp>
+              </Parallelism>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>
